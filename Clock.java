@@ -21,13 +21,7 @@ public class Clock implements Runnable {
     public void run() {
         Main main = new Main();
     //----Movie entry--------
-        //check if movie session is On
-        while(main.SessionOn.get()==true){
-            msg("Other session in process... need to send visitors to busywait in loby");
-            if(main.SessionOn.get()==false){
-                main.SessionOn.set(false); //session is tunr on on clock
-            }
-        };
+        
         msg("Started");
         msg("Ready to get visitors in. Needs to signal visitors");
         main.SessionOn.set(true);

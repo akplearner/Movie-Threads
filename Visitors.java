@@ -19,6 +19,14 @@ public class Visitors implements Runnable {
   }
 
   public void run() {
+    Main main = new Main();
+    //check if movie session is On
+    while(main.SessionOn.get()==true){
+      msg("Other session in process... visitors to busywait in loby");
+      if(main.SessionOn.get()==false){
+        main.SessionOn.set(false); //session is tunr on on clock
+      }
+    }
     msg("Started");
     //when awoken need to get into theater
     msg("Ending");
