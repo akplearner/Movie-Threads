@@ -22,8 +22,26 @@ public class Speaker implements Runnable {
     }
 
     public void run() {
+        Main main = new Main();
         msg("Started");
-        msg(Main.visitor[ (int) ( (Math.random()*100 )%23) ].getName()); // ================Make it number random
+        msg("let visitors come in");
+        int full=0;
+        while(full<5){ //while full<5 then continue sitting visitors
+            int num =(int)((Math.random()*100)%22);
+            if(main.visitorOut[num].get()==false ){ //if visitor have not leave yet then change flag
+                main.visitorSitting[num].set(true);; //change flag
+                msg(main.visitor[num].getName()+" sittingFlag="+main.visitorSitting[num].get() );
+                //msg(" queue num="+main.visitorNumQueue.get(num) );
+                main.visitorOut[num].set(true); //visitors left
+                full++;
+            }
+
+        }
+        // for(int i=0; i<main.numVisitors ; i++){
+        //     if(main.visitorSitting[i].get()){
+        //         msg(main.visitor[i].getName()); // ================Make it number random
+        //     }
+        // }
         msg("Ending");
     }
 

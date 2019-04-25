@@ -1,19 +1,26 @@
 
+import java.util.LinkedList;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Main extends Thread {
     //variables
         private static long time = System.currentTimeMillis();
-        private static int numVisitors = 23 ;//(The numVisitors should be an argument to the program.)
+        public static int numVisitors = 23 ;//(The numVisitors should be an argument to the program.)
         private static int theaterCapacity = 5;
-        private static int party_ticket =3;
-        
+        private static int party_ticket =3; 
         
         public static int movieNum = 4; // [Throughout the day, they are four movie presentations]
     
     //visitors stuff
     public static Thread[] visitor = new Thread[numVisitors];
+
+    
+    public static AtomicBoolean[] visitorOut = new AtomicBoolean[numVisitors];
+    public static AtomicBoolean[] visitorSitting = new AtomicBoolean[numVisitors];
     //clock stuff
     public static Thread[] clock = new Thread[movieNum];
     public static AtomicBoolean SessionOn = new AtomicBoolean(false);
@@ -24,12 +31,18 @@ public class Main extends Thread {
     public static void main(String args[]) throws InterruptedException{
             
         Thread threadMain = Thread.currentThread(); 
-        msg("Started running ");
+        msg("Started running");
         
     //creates number of visitors and Starts visitor threads
         for (int i = 0; i < numVisitors; i++) {
             visitor[i] = new Thread(new Visitors(Integer.toString(i)));   
-            visitor[i].setName("visitor"+i);  
+            visitor[i].setName("visitor"+i); 
+
+            visitorOut[i]=new AtomicBoolean(); 
+            visitorOut[i].set(false);
+
+            visitorSitting[i]=new AtomicBoolean(); 
+            visitorSitting[i].set(false);
         }
         for (int i= 0; i < numVisitors; i++) {
             visitor[i].start();
