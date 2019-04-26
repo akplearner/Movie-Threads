@@ -7,7 +7,7 @@ public class Clock implements Runnable {
   // instance variables
   private static Thread thread;
   public static long time = System.currentTimeMillis();
-
+  
   // Constructor
   public Clock() {
     this.thread = new Thread(this, "Speaker");

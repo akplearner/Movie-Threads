@@ -25,6 +25,7 @@ public class Speaker implements Runnable {
         Main main = new Main();
         msg("Started");
         msg("let visitors come in");
+        ////////main.visitorVector.get(0).;;
         int full=0;
         while(full<5){ //while full<5 then continue sitting visitors
             int num =(int)((Math.random()*100)%22);

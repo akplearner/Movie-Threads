@@ -17,13 +17,14 @@ public class Main extends Thread {
     
     //visitors stuff
     public static Thread[] visitor = new Thread[numVisitors];
-
+    public static volatile Vector<Visitors> visitorVector = new Vector<Visitors>();
     
     public static AtomicBoolean[] visitorOut = new AtomicBoolean[numVisitors];
     public static AtomicBoolean[] visitorSitting = new AtomicBoolean[numVisitors];
     //clock stuff
     public static Thread[] clock = new Thread[movieNum];
     public static AtomicBoolean SessionOn = new AtomicBoolean(false);
+    
     //speaker stuff
     public static Thread speaker;
     
@@ -35,13 +36,14 @@ public class Main extends Thread {
         
     //creates number of visitors and Starts visitor threads
         for (int i = 0; i < numVisitors; i++) {
-            visitor[i] = new Thread(new Visitors(Integer.toString(i)));   
-            visitor[i].setName("visitor"+i); 
+            Visitors visitors = new Visitors (Integer.toString(i) , visitorVector);
+            visitor[i] = new Thread(visitors );   
+            visitor[i].setName("visitor"+i);
 
-            visitorOut[i]=new AtomicBoolean(); 
+            visitorOut[i]=new AtomicBoolean();
             visitorOut[i].set(false);
 
-            visitorSitting[i]=new AtomicBoolean(); 
+            visitorSitting[i]=new AtomicBoolean();
             visitorSitting[i].set(false);
         }
         for (int i= 0; i < numVisitors; i++) {
@@ -57,6 +59,10 @@ public class Main extends Thread {
             clock[i].start();
             clock[i].join();
         }
+
+        Thread.currentThread().sleep(10000);
+        msg("first element"+visitorVector.firstElement() );
+        System.out.println("Main vec size " + Main.visitorVector.size());
         //SessionOn.set(true);
 
     //create speaker
