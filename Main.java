@@ -25,18 +25,17 @@ public class Main extends Thread {
     public static Thread[] clock = new Thread[movieNum];
     public static AtomicBoolean SessionOn = new AtomicBoolean(false);
     
-    //speaker stuff
+    //Created Speaker stuff
     public static Thread speaker;
     
     //methods
     public static void main(String args[]) throws InterruptedException{
-            
+        //msg("Main Started Running");
         Thread threadMain = Thread.currentThread(); 
-        msg("Started running");
         
-    //creates number of visitors and Starts visitor threads
+        //creates number of visitors and Starts visitor threads
         for (int i = 0; i < numVisitors; i++) {
-            Visitors visitors = new Visitors (Integer.toString(i) , visitorVector);
+            Visitors visitors = new Visitors (i , visitorVector);
             visitor[i] = new Thread(visitors );   
             visitor[i].setName("visitor"+i);
 
@@ -46,35 +45,26 @@ public class Main extends Thread {
             visitorSitting[i]=new AtomicBoolean();
             visitorSitting[i].set(false);
         }
+
+
+        //creates the 4 clock times that will be play on the day
+        for(int i=0; i<4 ; i++){ 
+            Visitors visitors = new Visitors (i , visitorVector);
+            clock[i] = new Thread(new Clock( visitorVector, speaker));
+            clock[i].setName("Clock-"+i);
+        }
         for (int i= 0; i < numVisitors; i++) {
             visitor[i].start();
-        }
-
-    //creates the clock
-        for(int i=0; i<4 ; i++){ 
-            clock[i] = new Thread(new Clock());
-            clock[i].setName("Clock-"+i);
         }
         for(int i=0; i<4 ; i++){
             clock[i].start();
             clock[i].join();
+            
         }
-
-        Thread.currentThread().sleep(10000);
-        msg("first element"+visitorVector.firstElement() );
         System.out.println("Main vec size " + Main.visitorVector.size());
-        //SessionOn.set(true);
-
     //create speaker
-        //speaker.start();
-        //speaker.setName("Speaker");
+        
     }
-
-    /*
-    public RandomThread(int id) {
-        setName("RandomThread-" + id);
-    }
-    */
 
     public static void msg(String m){
         System.out.println("["+(System.currentTimeMillis()-time)+"] "+": "+Thread.currentThread().getName()+" - "+m);

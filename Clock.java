@@ -1,42 +1,44 @@
 
 import java.util.Date;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.lang.Thread.*;
 
 public class Clock implements Runnable {
   // instance variables
   private static Thread thread;
+  private Thread speaker;
   public static long time = System.currentTimeMillis();
+  Vector<Visitors> visitorVector = new Vector<Visitors>();
   
   // Constructor
-  public Clock() {
+  public Clock(Vector<Visitors> visitorVector ,Thread sp) {
     this.thread = new Thread(this, "Speaker");
+    this.speaker = sp;
   }
 
-  // Methods
-  public void start() {
-    thread.start();
-  }
+    // Methods
+    public void start() {
+      thread.start();
+    }
 
     public void run() {
-        Main main = new Main();
     //----Movie entry--------
+        msg("telling speaker to guide visitors in");
         
-        msg("Started");
-        msg("Ready to get visitors in. Needs to signal visitors");
-        main.SessionOn.set(true);
+        Main.SessionOn.set(true);
 
         //time to tell speaker to handle visitors //signal visitors
-        main.speaker = new Thread(new Speaker());
-        main.speaker.start();
-        main.speaker.setName("Speaker");
+        Main.speaker = new Thread(new Speaker());
+        Main.speaker.start();
+        Main.speaker.setName("Speaker");
         try {
-            main.speaker.join(); //to make sure the speaker is inside the clock[i]
+            Main.speaker.join(); //to make sure the speaker is inside the clock[i]
         } catch (Exception e) {
             e.printStackTrace();
         }
        
-        main.SessionOn.set(false);
+        Main.SessionOn.set(false);
         msg("Ending");
   }
   

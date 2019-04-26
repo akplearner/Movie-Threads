@@ -7,16 +7,17 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class Visitors implements Runnable {
   // Instance variable
-  private String num;
+  private int num;
   private Thread thread;
   public static long time = System.currentTimeMillis();
   private Object lock = new Object();
   Vector<Visitors> visitorVector = new Vector<Visitors>();
+
   // Constructor
-  public Visitors(String num, Vector<Visitors> visitorVector) {
-    //save this num in queueInteger atomic to know priority
-    this.num = "visitor_" + num;
-    this.thread = new Thread(this, num);
+  public Visitors(int num, Vector<Visitors> visitorVector) {
+    // save this num in queueInteger atomic to know priority
+    this.num = num;
+    this.thread = new Thread(this, "visitor_" + num);
     this.visitorVector = visitorVector;
   }
 
@@ -26,26 +27,37 @@ public class Visitors implements Runnable {
   }
 
   public void run() {
-
+    msg("Just Came in");
+    // Adding visitor to queue
     inTheater();
-    System.out.println("visitor vec size " + Main.visitorVector.size());
-    //--->>>main.visitorNumQueue.set( main.Num.getAndIncrement(), this.num);
+
     // check if movie session is On
     while (Main.SessionOn.get() == true) {
-      msg("Other session in process... visitors to busywait in loby");
-      if (Main.SessionOn.get() == false) {
-        Main.SessionOn.set(false); // session is tunr on on clock
+      msg("visitors busywait in lobby");
+      try {
+        this.thread.sleep(1000);
+      } catch (InterruptedException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
       }
 
+      if (Main.SessionOn.get() == false) {
+        Main.SessionOn.set(false); // session is turn on on clock
+      }
+    }
+
+    while (Main.visitorOut[num].get() == false) {
       try {
-        Thread.currentThread().sleep(1000);
+        this.thread.sleep(1000);
       } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
-    msg("Started");
-    //when awoken need to get into theater
-    msg("Ending");
+    // when awoken need to get into theater
+    Main.visitorOut[this.num].set(true);
+    msg("left");
+
   }
 
   public void inTheater()
@@ -53,7 +65,6 @@ public class Visitors implements Runnable {
     synchronized(lock)
     {
       Main.visitorVector.addElement(this);
-      System.out.println("visitor vec size" + Main.visitorVector.size());
     }
   }
   public static void msg(String m){

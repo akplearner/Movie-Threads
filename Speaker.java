@@ -31,7 +31,7 @@ public class Speaker implements Runnable {
             int num =(int)((Math.random()*100)%22);
             if(main.visitorOut[num].get()==false ){ //if visitor have not leave yet then change flag
                 main.visitorSitting[num].set(true);; //change flag
-                msg(main.visitor[num].getName()+" sittingFlag="+main.visitorSitting[num].get() );
+                msg(main.visitor[num].getName()+" sitting");
                 //msg(" queue num="+main.visitorNumQueue.get(num) );
                 main.visitorOut[num].set(true); //visitors left
                 full++;
